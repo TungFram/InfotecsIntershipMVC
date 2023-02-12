@@ -1,29 +1,45 @@
 ﻿using InfotecsIntershipMVC.DAL.Models;
+using InfotecsIntershipMVC.Services.Converting;
+using InfotecsIntershipMVC.Services.CSV;
+using InfotecsIntershipMVC.Services.Calculaing;
+using InfotecsIntershipMVC.DAL.Repositories;
 
 namespace InfotecsIntershipMVC.Services
 {
     public class MainService
     {
+        private FilesRepository _filesRepository;
+
         private readonly ICsvService _csvService;
         private readonly IConvertingService _convertingService;
+        /*private readonly ICalculatingValuesService _calculaingValuesServise;*/
 
-        public MainService(ICsvService csvService, IConvertingService convertingService)
+        public MainService(
+            FilesRepository filesRepository,
+            ICsvService csvService, 
+            IConvertingService convertingService/*,
+            ICalculatingValuesService calculaingValuesServise*/)
         {
+            _filesRepository = filesRepository;
             _csvService = csvService;
             _convertingService = convertingService;
+            /*_calculaingValuesServise = calculaingValuesServise;*/
         }
 
         internal void SendAndReadCsv(IFormFile file)
         {
-            IEnumerable<StringRecordEntity> fileData = _csvService.ReadCSV(file.OpenReadStream());
             if (file.Length == 0)
                 return; // File is empty. No exception because of expensive.
 
+            IEnumerable<StringRecordEntity> fileData = _csvService.ReadCSV(file.OpenReadStream());
+
             //прочитать хедеры файла и передать в метод, там проверить есть ли они,
             //если есть, то прочитать их и замапить свойства
-            var data = _convertingService.ConvertFileData(fileData, file.FileName);
-            
-            
+
+            FileEntity fileEntityBeforePersistingInDB =
+                _convertingService.ConvertFileData(fileData, file.FileName);
+
+            _filesRepository.Create(fileEntityBeforePersistingInDB);
             
         }
     }

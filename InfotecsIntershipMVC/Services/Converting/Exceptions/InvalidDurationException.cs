@@ -1,4 +1,4 @@
-﻿namespace InfotecsIntershipMVC.Services.Exceptions
+﻿namespace InfotecsIntershipMVC.Services.Converting.Exceptions
 {
     [Serializable]
     public class InvalidDurationException : Exception

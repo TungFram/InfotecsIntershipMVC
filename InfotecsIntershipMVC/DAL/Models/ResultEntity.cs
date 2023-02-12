@@ -10,15 +10,15 @@ namespace InfotecsIntershipMVC.DAL.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid ResultID { get; }
 
-        [Required] public string    FileName        { get; }
-        [Required] public TimeSpan  AllTime         { get; }
-        [Required] public DateTime  FirstOperation  { get; }
-        [Required] public int       AverageDuration { get; }
-        [Required] public float     MedianByValue   { get; }
-        [Required] public float     MaxValue        { get; }
-        [Required] public float     AverageValue    { get; }
-        [Required] public float     MinValue        { get; }
-        [Required] public int       RowCount        { get; }
+        [Required] public string    FileName        { get; set; }
+        [Required] public TimeSpan  AllTime         { get; set; }
+        [Required] public DateTime  FirstOperation  { get; set; }
+        [Required] public int       AverageDuration { get; set; }
+        [Required] public float     MedianByValue   { get; set; }
+        [Required] public float     MaxValue        { get; set; }
+        [Required] public float     AverageValue    { get; set; }
+        [Required] public float     MinValue        { get; set; }
+        [Required] public int       RowCount        { get; set; }
 
     }
 }

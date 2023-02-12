@@ -1,21 +1,21 @@
 ﻿using InfotecsIntershipMVC.DAL.Models;
-using InfotecsIntershipMVC.Services.Exceptions;
+using InfotecsIntershipMVC.Services.Converting.Exceptions;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace InfotecsIntershipMVC.Services
+namespace InfotecsIntershipMVC.Services.Converting
 {
-    public class ConvertingService
+    public class ConvertingService : IConvertingService
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<ConvertingService> _logger;
 
-        public ConvertingService(ILogger logger)
+        public ConvertingService(ILogger<ConvertingService> logger)
         {
             _logger = logger;
         }
 
-        public IEnumerable<RecordEntity> ConvertFileData(
+        public FileEntity ConvertFileData(
             IEnumerable<StringRecordEntity> fileData,
             string fileName)
         {
@@ -32,9 +32,9 @@ namespace InfotecsIntershipMVC.Services
             {
                 try
                 {
-                    DateTime    convertedDateTime   = ConvertDateTime(record.DateTime);
-                    int         convertedDuration   = ConvertDuration(record.Duraion);
-                    float       convertedValue      = ConvertValue(record.Value);
+                    DateTime convertedDateTime = ConvertDateTime(record.DateTime);
+                    int convertedDuration = ConvertDuration(record.Duraion);
+                    float convertedValue = ConvertValue(record.Value);
 
                     var newRecord = new RecordEntity()
                     {
@@ -82,6 +82,8 @@ namespace InfotecsIntershipMVC.Services
             }
 
             var fileEntity = new FileEntity(fileName, result);
+
+            return fileEntity;
             // Way 1:
             // 1) добавить файл в таблицу.
             // 2) получить его оттуда.

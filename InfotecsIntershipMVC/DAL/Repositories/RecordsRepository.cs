@@ -11,6 +11,6 @@ namespace InfotecsIntershipMVC.DAL.Repositories
             _dbContext = dbContext;
         }
 
-        public void 
+        /*public void */
     }
 }

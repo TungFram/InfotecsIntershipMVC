@@ -10,10 +10,10 @@ namespace InfotecsIntershipMVC.DAL.Repositories
 {
     public class FilesRepository : IGenericRepository<FileEntity>, IGenericAsyncRepository<FileEntity>
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<FilesRepository> _logger;
         private readonly InfotecsDBContext _dbContext;
 
-        public FilesRepository(ILogger<HomeController> logger,InfotecsDBContext dbContext)
+        public FilesRepository(ILogger<FilesRepository> logger,InfotecsDBContext dbContext)
         {
             _dbContext = dbContext != null ? dbContext : 
                 throw new ArgumentNullException(nameof(dbContext));

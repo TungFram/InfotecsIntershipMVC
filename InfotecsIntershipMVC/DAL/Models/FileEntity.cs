@@ -14,11 +14,12 @@ namespace InfotecsIntershipMVC.DAL.Models
             Name = name;
             Records = records;
         }
-        private FileEntity(Guid id,
+        private FileEntity(
+            Guid fileId,
             string name,
             IEnumerable<RecordEntity>? records)
         {
-            FileID = id;
+            FileID = fileId;
             Name = name;
             Records = records;
         }

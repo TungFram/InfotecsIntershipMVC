@@ -21,9 +21,9 @@ namespace InfotecsIntershipMVC.Controllers
         /*[ValidateAntiForgeryToken]*/
         public IActionResult UploadCsvFile(IFormFile file)
         {
-            var fileData = _mainService.SendAndReadCsv(file);
+            _mainService.SendAndReadCsv(file);
 
-            return Ok(fileData);
+            return Ok();
         }
 
         [HttpGet]

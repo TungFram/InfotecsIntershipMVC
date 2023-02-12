@@ -1,24 +1,23 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using InfotecsIntershipMVC.DAL.Models;
-using InfotecsIntershipMVC.Services.Exceptions;
 using Newtonsoft.Json.Linq;
 using System.Globalization;
 
-namespace InfotecsIntershipMVC.Services
+namespace InfotecsIntershipMVC.Services.CSV
 {
     public class CsvService : ICsvService
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<CsvService> _logger;
 
-        public CsvService(ILogger logger)
+        public CsvService(ILogger<CsvService> logger)
         {
             _logger = logger;
         }
 
         public IEnumerable<StringRecordEntity> ReadCSV(
-            Stream fileStream, 
-            string delimiter = ";", 
+            Stream fileStream,
+            string delimiter = ";",
             int rowCount = 10000)
         {
             // TODO: сделать флаг хедеров в параметрах и читать хедеры в зависимости от него,

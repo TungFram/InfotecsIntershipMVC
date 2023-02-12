@@ -1,7 +1,9 @@
 using InfotecsIntershipMVC.DAL.DbContexts;
+using InfotecsIntershipMVC.DAL.Models;
+using InfotecsIntershipMVC.DAL.Repositories;
 using InfotecsIntershipMVC.Services;
-
-
+using InfotecsIntershipMVC.Services.Converting;
+using InfotecsIntershipMVC.Services.CSV;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -11,6 +13,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<ICsvService, CsvService>();
+builder.Services.AddScoped<IConvertingService, ConvertingService>();
+/*builder.Services.AddScoped<IGenericAsyncRepository<FileEntity>, FilesRepository>();
+builder.Services.AddScoped<IGenericRepository<FileEntity>, FilesRepository>();*/
+builder.Services.AddTransient<MainService>();
+builder.Services.AddTransient<FilesRepository>();
 /*builder.Services.AddTransient<ICsvService, CsvService>();*/
 
 builder.Services.AddDbContext<InfotecsDBContext>
