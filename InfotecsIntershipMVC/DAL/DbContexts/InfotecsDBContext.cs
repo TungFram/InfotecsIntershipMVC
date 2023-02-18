@@ -27,7 +27,12 @@ namespace InfotecsIntershipMVC.DAL.DbContexts
             modelBuilder.Entity<RecordEntity>()
                 .HasOne(record => record.File)
                 .WithMany(file => file.Records)
-                .HasForeignKey(record => record.FileId)
+                .HasForeignKey(record => record.FileID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ResultEntity>()
+                .HasOne(result => result.File)
+                .WithOne(file => file.Result)
                 .OnDelete(DeleteBehavior.Cascade);
         }
 

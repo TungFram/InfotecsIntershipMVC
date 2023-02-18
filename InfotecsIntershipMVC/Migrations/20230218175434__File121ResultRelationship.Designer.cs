@@ -4,6 +4,7 @@ using InfotecsIntershipMVC.DAL.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InfotecsIntershipMVC.Migrations
 {
     [DbContext(typeof(InfotecsDBContext))]
-    partial class InfotecsDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230218175434__File121ResultRelationship")]
+    partial class File121ResultRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

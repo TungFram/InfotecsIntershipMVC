@@ -10,7 +10,7 @@ namespace InfotecsIntershipMVC.DAL.Models
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid RecordID { get; set; }
 
-        public Guid FileId { get; set; }
+        public Guid FileID { get; set; }
 
         /*[ForeignKey()]*/
         [JsonIgnore]

@@ -6,21 +6,6 @@ namespace InfotecsIntershipMVC.DAL.Models
 {
     public class FileEntity
     {
-        public FileEntity(string name)
-        {
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentNullException("Empty file or file name!");
-
-            Name = name;
-        }
-        private FileEntity(Guid fileId, string name, IEnumerable<RecordEntity>? records)
-        {
-            FileID = fileId;
-            Name = name;
-            Records = records;
-        }
-
-
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid FileID { get; set; }
 
@@ -30,6 +15,27 @@ namespace InfotecsIntershipMVC.DAL.Models
         public string Name { get; set; }
 
         public IEnumerable<RecordEntity>? Records { get; set; }
+        public ResultEntity Result { get; set; }
+
+        public FileEntity(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentNullException("Empty file name!");
+
+            Name = name;
+        }
+        private FileEntity(
+            Guid fileId, 
+            string name, 
+            IEnumerable<RecordEntity>? records,
+            ResultEntity result)
+        {
+            FileID = fileId;
+            Name = name;
+            Records = records;
+            Result = result;
+        }
+
 
 
         public FileEntityBuilder ToBuilder()
@@ -38,6 +44,7 @@ namespace InfotecsIntershipMVC.DAL.Models
             builder.WithId(FileID);
             builder.WithName(Name);
             builder.WithRecords(Records);
+            builder.WithResult(Result);
             return builder;
         }
 
@@ -47,6 +54,7 @@ namespace InfotecsIntershipMVC.DAL.Models
             private Guid _fileId;
             private string _name;
             private IEnumerable<RecordEntity> _records;
+            private ResultEntity _result;
 
             public FileEntityBuilder WithId(Guid id)
             {                
@@ -70,9 +78,18 @@ namespace InfotecsIntershipMVC.DAL.Models
                 return this;
             }
 
+            public FileEntityBuilder WithResult(ResultEntity result)
+            {
+                if (result == null || result.FileName != _name)
+                    result = new ResultEntity(_name);
+
+                _result = result;
+                return this;
+            }
+
             public FileEntity Build()
             {
-                var finalFileEntity = new FileEntity(_fileId, _name, _records);
+                var finalFileEntity = new FileEntity(_fileId, _name, _records, _result);
                 return finalFileEntity;
             }
 

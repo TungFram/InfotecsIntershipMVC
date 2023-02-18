@@ -42,17 +42,16 @@ namespace InfotecsIntershipMVC.Services
             //прочитать хедеры файла и передать в метод, там проверить есть ли они,
             //если есть, то прочитать их и замапить свойства
 
+            // Get file with empty result (only name of this file)
+            // and without Id.
             FileEntity fileEntity =
-                _convertingService.ConvertFileData(fileData, file.FileName); // Without ID.
-
-            ResultEntity resultEntity = 
-                new ResultEntity(fileEntity.Name);
+                _convertingService.ConvertFileData(fileData, file.FileName);
 
             var calculator = new CalculatingService(
                 fileEntity.Records.ToImmutableList(),
-                resultEntity);
+                fileEntity.Result);
 
-            resultEntity = calculator.WithOperations().CalculateValues();
+            fileEntity.Result = calculator.WithOperations().CalculateValues();
 
 
             using (var transactionScope = new TransactionScope(TransactionScopeOption.Required))
@@ -61,17 +60,17 @@ namespace InfotecsIntershipMVC.Services
                 if (existedFile != null)
                     _filesRepository.DeleteById(existedFile.FileID);
 
-                _filesRepository.Create(fileEntity); // Get ID.
-                _resultsRepository.Create(resultEntity); // Get ID.
+                _filesRepository.Create(fileEntity);            // Set ID.
+                /*_resultsRepository.Create(fileEntity.Result);*/   // Set ID.
 
                 // Check for successfully transaction.
                 if (_filesRepository.FindById(fileEntity.FileID) != null ||
-                    _resultsRepository.FindById(resultEntity.ResultID) != null)
+                    _resultsRepository.FindById(fileEntity.Result.ResultID) != null)
                 {
                     // Success.
                     _logger.LogInformation(
                         $"File {fileEntity.Name} was added to db " +
-                        $"with {resultEntity.RowCount} rows.");
+                        $"with {fileEntity.Result.RowCount} rows");
 
                     transactionScope.Complete();
                 }
@@ -80,7 +79,7 @@ namespace InfotecsIntershipMVC.Services
                     // Fail.
                     _logger.LogCritical(
                         $"File {fileEntity.Name} wasn't added to db!" +
-                        $"Was the file before adding: {existedFile != null}.");
+                        $"Was the file before adding? {existedFile != null}.");
                 }
             }
         }

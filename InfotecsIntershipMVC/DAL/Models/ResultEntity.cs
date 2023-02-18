@@ -25,6 +25,9 @@ namespace InfotecsIntershipMVC.DAL.Models
         [Required] public float     MinValue        { get; set; }
         [Required] public int       RowCount        { get; set; }
 
+        public Guid FileID { get; set; }
+        public FileEntity File { get; set; }
+
         public ResultEntity(string fileName)
         {
             if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(nameof(fileName));
@@ -42,7 +45,9 @@ namespace InfotecsIntershipMVC.DAL.Models
             MaxValue = another.MaxValue;
             AverageValue = another.AverageValue;
             MinValue = another.MinValue;
-            RowCount = another.RowCount;            
+            RowCount = another.RowCount;      
+            FileID = another.FileID;
+            File = another.File;
         }
 
     }
