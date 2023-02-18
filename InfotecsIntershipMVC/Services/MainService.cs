@@ -3,27 +3,33 @@ using InfotecsIntershipMVC.Services.Converting;
 using InfotecsIntershipMVC.Services.CSV;
 using InfotecsIntershipMVC.Services.Calculaing;
 using InfotecsIntershipMVC.DAL.Repositories;
+using System.Collections.Immutable;
+using System.Transactions;
 
 namespace InfotecsIntershipMVC.Services
 {
     public class MainService
     {
+        private readonly ILogger<MainService> _logger;
+
         private FilesRepository _filesRepository;
+        private ResultsRepository _resultsRepository;
 
         private readonly ICsvService _csvService;
         private readonly IConvertingService _convertingService;
-        /*private readonly ICalculatingValuesService _calculaingValuesServise;*/
 
         public MainService(
+            ILogger<MainService> logger,
             FilesRepository filesRepository,
+            ResultsRepository resultsRepository,
             ICsvService csvService, 
-            IConvertingService convertingService/*,
-            ICalculatingValuesService calculaingValuesServise*/)
+            IConvertingService convertingService)
         {
+            _logger = logger;
             _filesRepository = filesRepository;
+            _resultsRepository = resultsRepository;
             _csvService = csvService;
             _convertingService = convertingService;
-            /*_calculaingValuesServise = calculaingValuesServise;*/
         }
 
         internal void SendAndReadCsv(IFormFile file)
@@ -36,11 +42,47 @@ namespace InfotecsIntershipMVC.Services
             //прочитать хедеры файла и передать в метод, там проверить есть ли они,
             //если есть, то прочитать их и замапить свойства
 
-            FileEntity fileEntityBeforePersistingInDB =
-                _convertingService.ConvertFileData(fileData, file.FileName);
+            FileEntity fileEntity =
+                _convertingService.ConvertFileData(fileData, file.FileName); // Without ID.
 
-            _filesRepository.Create(fileEntityBeforePersistingInDB);
-            
+            ResultEntity resultEntity = 
+                new ResultEntity(fileEntity.Name);
+
+            var calculator = new CalculatingService(
+                fileEntity.Records.ToImmutableList(),
+                resultEntity);
+
+            resultEntity = calculator.WithOperations().CalculateValues();
+
+
+            using (var transactionScope = new TransactionScope(TransactionScopeOption.Required))
+            {
+                FileEntity? existedFile = _filesRepository.FindByName(file.FileName);
+                if (existedFile != null)
+                    _filesRepository.DeleteById(existedFile.FileID);
+
+                _filesRepository.Create(fileEntity); // Get ID.
+                _resultsRepository.Create(resultEntity); // Get ID.
+
+                // Check for successfully transaction.
+                if (_filesRepository.FindById(fileEntity.FileID) != null ||
+                    _resultsRepository.FindById(resultEntity.ResultID) != null)
+                {
+                    // Success.
+                    _logger.LogInformation(
+                        $"File {fileEntity.Name} was added to db " +
+                        $"with {resultEntity.RowCount} rows.");
+
+                    transactionScope.Complete();
+                }
+                else
+                {
+                    // Fail.
+                    _logger.LogCritical(
+                        $"File {fileEntity.Name} wasn't added to db!" +
+                        $"Was the file before adding: {existedFile != null}.");
+                }
+            }
         }
     }
 }

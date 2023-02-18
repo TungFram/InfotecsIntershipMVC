@@ -18,7 +18,7 @@ namespace InfotecsIntershipMVC.Services.CSV
         public IEnumerable<StringRecordEntity> ReadCSV(
             Stream fileStream,
             string delimiter = ";",
-            int rowCount = 10000)
+            int rowLimit = 10000)
         {
             // TODO: сделать флаг хедеров в параметрах и читать хедеры в зависимости от него,
             // по-хорошему надо отдельный флаг или анализ сделать.
@@ -35,9 +35,9 @@ namespace InfotecsIntershipMVC.Services.CSV
             var records = new List<StringRecordEntity>();
             while (csvReader.Read())
             {
-                if (records.Count >= rowCount)
+                if (records.Count >= rowLimit)
                 {
-                    _logger.LogWarning($"File have to contain {rowCount} lines." +
+                    _logger.LogWarning($"File have to contain {rowLimit} lines." +
                         $"Value is reached, file reading was stopped.");
                     break;
                 }

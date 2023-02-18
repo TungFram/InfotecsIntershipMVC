@@ -1,16 +1,20 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace InfotecsIntershipMVC.DAL.Models
 {
     public class RecordEntity
     {
 
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid RecordID { get; }
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid RecordID { get; set; }
 
-        public Guid FileID { get; }
+        public Guid FileId { get; set; }
+
+        /*[ForeignKey()]*/
+        [JsonIgnore]
+        public FileEntity File { get; set; }
 
 
         [Required]

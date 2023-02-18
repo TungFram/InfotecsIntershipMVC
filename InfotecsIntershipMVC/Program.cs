@@ -6,11 +6,17 @@ using InfotecsIntershipMVC.Services.Converting;
 using InfotecsIntershipMVC.Services.CSV;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
+builder.Services.AddDbContext<InfotecsDBContext>
+    (options => options.UseSqlServer(builder.Configuration.GetConnectionString("InfotecsDB")));
+
 
 builder.Services.AddScoped<ICsvService, CsvService>();
 builder.Services.AddScoped<IConvertingService, ConvertingService>();
@@ -18,14 +24,11 @@ builder.Services.AddScoped<IConvertingService, ConvertingService>();
 builder.Services.AddScoped<IGenericRepository<FileEntity>, FilesRepository>();*/
 builder.Services.AddTransient<MainService>();
 builder.Services.AddTransient<FilesRepository>();
-/*builder.Services.AddTransient<ICsvService, CsvService>();*/
+builder.Services.AddTransient<ResultsRepository>();
 
-builder.Services.AddDbContext<InfotecsDBContext>
-    (options => options.UseSqlServer(builder.Configuration.GetConnectionString("InfotecsDB")));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-/*builder.Services.AddSwaggerGen();*/
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -48,6 +51,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

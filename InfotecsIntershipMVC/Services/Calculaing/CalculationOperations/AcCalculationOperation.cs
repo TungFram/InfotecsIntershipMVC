@@ -1,23 +1,45 @@
 ﻿using InfotecsIntershipMVC.DAL.Models;
+using InfotecsIntershipMVC.DAL.Repositories;
 
 namespace InfotecsIntershipMVC.Services.Calculaing.CalculationCommands
 {
     public abstract class AcCalculationOperation
     {
-        private AcCalculationOperation? _nextHandler;
-        public abstract ResultEntity Execute(IReadOnlyCollection<RecordEntity> records, ResultEntity result);
+        protected AcCalculationOperation? _nextHandler;
+        protected IReadOnlyCollection<RecordEntity> _records;
+        protected ResultEntity _result;
 
-        public AcCalculationOperation WithNextOperation(AcCalculationOperation nextHandler)
+        public AcCalculationOperation(IReadOnlyCollection<RecordEntity> records, ResultEntity result)
         {
-            _nextHandler = nextHandler;
-            return this;
+            _records = records;
+            _result = result;
+            if (!IsDataValid()) 
+                throw new ArgumentNullException("Result entity or file doesn't exist, or file might doesn't contain any rows.");
         }
 
-        /*public void ToNextOperation()
+        public abstract ResultEntity Execute();
+
+        public AcCalculationOperation? WithNextOperation(AcCalculationOperation? nextHandler)
+        {
+            _nextHandler = nextHandler;
+            return nextHandler;
+        }
+
+        protected bool IsDataValid()
+        {
+            if (_result == null
+                || _records == null
+                || _records.Count == 0)
+                return false;
+
+            return true;
+        }
+
+        protected void ToNextOperation()
         {
             if (_nextHandler == null)
                 return;
-            _nextHandler.Execute(re);
-        }*/
+            _nextHandler.Execute();
+        }
     }
 }

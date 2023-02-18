@@ -6,33 +6,30 @@ namespace InfotecsIntershipMVC.DAL.Models
 {
     public class FileEntity
     {
-        public FileEntity(string name, IEnumerable<RecordEntity>? records)
+        public FileEntity(string name)
         {
-            if (string.IsNullOrEmpty(name) || records == null || records.ToList().Count == 0)
+            if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException("Empty file or file name!");
 
             Name = name;
-            Records = records;
         }
-        private FileEntity(
-            Guid fileId,
-            string name,
-            IEnumerable<RecordEntity>? records)
+        private FileEntity(Guid fileId, string name, IEnumerable<RecordEntity>? records)
         {
             FileID = fileId;
             Name = name;
             Records = records;
         }
 
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid FileID { get; }
+
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid FileID { get; set; }
 
         [Required]
-        [StringLength(50)]
+        [MaxLength(255, ErrorMessage = "Name of file must contain 255 characters by standards"),
+            MinLength(1, ErrorMessage = "Name of file must have at least 1 symbol")]
         public string Name { get; set; }
 
-        public IEnumerable<RecordEntity>? Records { get; }
+        public IEnumerable<RecordEntity>? Records { get; set; }
 
 
         public FileEntityBuilder ToBuilder()
@@ -47,16 +44,13 @@ namespace InfotecsIntershipMVC.DAL.Models
 
         public class FileEntityBuilder
         {
-            private Guid _fileID;
+            private Guid _fileId;
             private string _name;
             private IEnumerable<RecordEntity> _records;
 
             public FileEntityBuilder WithId(Guid id)
-            {
-                if (id == default(Guid)) 
-                    throw new ArgumentNullException("Invalid id!");
-                
-                _fileID = id;
+            {                
+                _fileId = id;
                 return this;
             }
             public FileEntityBuilder WithName(string name)
@@ -70,7 +64,7 @@ namespace InfotecsIntershipMVC.DAL.Models
             public FileEntityBuilder WithRecords(IEnumerable<RecordEntity> recordEntities)
             {
                 if (recordEntities == null || recordEntities.ToList().Count == 0)
-                    throw new ArgumentNullException("Invalid records!");
+                    recordEntities = new List<RecordEntity>();
 
                 _records = recordEntities;
                 return this;
@@ -78,7 +72,7 @@ namespace InfotecsIntershipMVC.DAL.Models
 
             public FileEntity Build()
             {
-                var finalFileEntity = new FileEntity(_fileID, _name, _records);
+                var finalFileEntity = new FileEntity(_fileId, _name, _records);
                 return finalFileEntity;
             }
 

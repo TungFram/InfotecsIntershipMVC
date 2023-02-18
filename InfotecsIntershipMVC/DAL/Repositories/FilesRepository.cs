@@ -36,18 +36,32 @@ namespace InfotecsIntershipMVC.DAL.Repositories
             return fileEntity.FileID;
         }
 
+        public FileEntity? FindByName(string name)
+        {
+            return _dbContext.Files
+                .Include(file => file.Records)
+                .FirstOrDefault(file => file.Name == name);
+        }
+
+        public async Task<FileEntity?> FindByNameAsync(string name)
+        {
+            return await _dbContext.Files
+                .Include(file => file.Records)
+                .FirstOrDefaultAsync(file => file.Name == name);
+        }
+
         public FileEntity? FindById(Guid id)
         {
             return _dbContext.Files
                 .Include(file => file.Records)
-                .FirstOrDefault(f => f.FileID == id);
+                .FirstOrDefault(file => file.FileID == id);
         }
 
         public async Task<FileEntity?> FindByIdAsync(Guid id)
         {
             return await _dbContext.Files
                 .Include(file => file.Records)
-                .FirstOrDefaultAsync(f => f.FileID == id);
+                .FirstOrDefaultAsync(file => file.FileID == id);
         }
 
         public IEnumerable<FileEntity> GetAll()
@@ -67,30 +81,29 @@ namespace InfotecsIntershipMVC.DAL.Repositories
 
         public int Update(FileEntity newEntity)
         {
-            var entry = _dbContext.Entry(newEntity);
             FileEntity oldEntity = FindById(newEntity.FileID);
-            if (oldEntity == null)
+            if (oldEntity == null)  
             {
                 _logger.LogWarning($"Can't update file {newEntity}: cannot find it in db.");
                 return 0;
             }
 
-            FileEntity existedFileEntity = oldEntity.ToBuilder()
+            var entry = _dbContext.Entry(oldEntity);
+            _logger.LogInformation($"File {oldEntity} was updated:" +
+                $"name from {oldEntity.Name} to {newEntity.Name}," +
+                $"records from {oldEntity.Records} to {newEntity.Records}.");
+
+            oldEntity = oldEntity.ToBuilder()
                 .WithName(newEntity.Name)
                 .WithRecords(newEntity.Records)
                 .Build();
 
             entry.State = EntityState.Modified;
-            _logger.LogInformation($"File {oldEntity} was updated to {existedFileEntity}.");
-
-            _dbContext.SaveChanges();
-            return 1;
+            return _dbContext.SaveChanges();
         }
 
         public async Task<int> UpdateAsync(FileEntity newEntity)
         {
-            var entry = _dbContext.Entry(newEntity);
-
             FileEntity? oldEntity = await FindByIdAsync(newEntity.FileID);
             if (oldEntity == default)
             {
@@ -98,16 +111,16 @@ namespace InfotecsIntershipMVC.DAL.Repositories
                 return 0;
             }
 
-            FileEntity existedFileEntity = oldEntity.ToBuilder()
+            var entry = _dbContext.Entry(newEntity);
+            _logger.LogInformation($"File {oldEntity} was updated to {newEntity}.");
+
+            oldEntity = oldEntity.ToBuilder()
                 .WithName(newEntity.Name)
                 .WithRecords(newEntity.Records)
                 .Build();
 
             entry.State = EntityState.Modified;
-            _logger.LogInformation($"File {oldEntity} was updated to {existedFileEntity}.");
-
-            await _dbContext.SaveChangesAsync();
-            return 1;
+            return await _dbContext.SaveChangesAsync();
         }
 
         public void DeleteById(Guid id)

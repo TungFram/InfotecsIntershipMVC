@@ -81,7 +81,8 @@ namespace InfotecsIntershipMVC.Services.Converting
                 }
             }
 
-            var fileEntity = new FileEntity(fileName, result);
+            var fileEntity = new FileEntity(fileName)
+                .ToBuilder().WithRecords(result).Build();
 
             return fileEntity;
             // Way 1:

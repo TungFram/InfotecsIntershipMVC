@@ -1,5 +1,6 @@
 ﻿using InfotecsIntershipMVC.DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InfotecsIntershipMVC.DAL.DbContexts
 {
@@ -11,15 +12,23 @@ namespace InfotecsIntershipMVC.DAL.DbContexts
 
         public InfotecsDBContext(DbContextOptions options) : base(options)
         {
+            /*Database.EnsureDeleted();*/ // Clear all data when start app.
             Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            /*modelBuilder.Entity<FileEntity>()
+                .HasKey(f => f.FileID)
+                .HasName("PrimaryKey_FileID");*/
+
+            /*modelBuilder.Entity<FileEntity>().Property(f => f.FileID).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);*/
+
             modelBuilder.Entity<RecordEntity>()
-                .HasOne<FileEntity>()
+                .HasOne(record => record.File)
                 .WithMany(file => file.Records)
-                .HasForeignKey(record => record.FileID);
+                .HasForeignKey(record => record.FileId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
     }
