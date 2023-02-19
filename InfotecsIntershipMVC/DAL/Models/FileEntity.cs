@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InfotecsIntershipMVC.DAL.Models
 {
-    public class FileEntity
+    public class FileEntity : IEntity
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid FileID { get; set; }

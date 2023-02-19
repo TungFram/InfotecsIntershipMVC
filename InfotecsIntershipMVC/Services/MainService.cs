@@ -5,6 +5,8 @@ using InfotecsIntershipMVC.Services.Calculaing;
 using InfotecsIntershipMVC.DAL.Repositories;
 using System.Collections.Immutable;
 using System.Transactions;
+using InfotecsIntershipMVC.Services.Filtering.Filters;
+using InfotecsIntershipMVC.Services.Filtering;
 
 namespace InfotecsIntershipMVC.Services
 {
@@ -17,19 +19,22 @@ namespace InfotecsIntershipMVC.Services
 
         private readonly ICsvService _csvService;
         private readonly IConvertingService _convertingService;
+        private readonly IFilteringService _filteringService;
 
         public MainService(
             ILogger<MainService> logger,
             FilesRepository filesRepository,
             ResultsRepository resultsRepository,
             ICsvService csvService, 
-            IConvertingService convertingService)
+            IConvertingService convertingService,
+            IFilteringService filteringService)
         {
             _logger = logger;
             _filesRepository = filesRepository;
             _resultsRepository = resultsRepository;
             _csvService = csvService;
             _convertingService = convertingService;
+            _filteringService = filteringService;
         }
 
         internal void SendAndReadCsv(IFormFile file)
@@ -61,6 +66,10 @@ namespace InfotecsIntershipMVC.Services
                     _filesRepository.DeleteById(existedFile.FileID);
 
                 _filesRepository.Create(fileEntity);            // Set ID.
+
+                    // The action below is no longer necessary, because
+                    // the file and its result are linked via relationship,
+                    // the creation will be done within EF automatically.
                 /*_resultsRepository.Create(fileEntity.Result);*/   // Set ID.
 
                 // Check for successfully transaction.
@@ -82,6 +91,16 @@ namespace InfotecsIntershipMVC.Services
                         $"Was the file before adding? {existedFile != null}.");
                 }
             }
+        }
+
+        public IEnumerable<ResultEntity> ApplyFiltersToData(IEnumerable<AcFilter> filters)
+        {
+            IEnumerable<ResultEntity> filteredResults = _filteringService
+                .WithFilters(filters)
+                .WithData(_resultsRepository.GetAllImmutable())
+                .ApplyFileters();
+
+            return filteredResults;
         }
     }
 }

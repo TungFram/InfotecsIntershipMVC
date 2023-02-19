@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace InfotecsIntershipMVC.DAL.Models
 {
-    public class ResultEntity
+    public class ResultEntity : IEntity
     {
 
         [Key]
@@ -26,7 +27,7 @@ namespace InfotecsIntershipMVC.DAL.Models
         [Required] public int       RowCount        { get; set; }
 
         public Guid FileID { get; set; }
-        public FileEntity File { get; set; }
+        [JsonIgnore] public FileEntity File { get; set; }
 
         public ResultEntity(string fileName)
         {

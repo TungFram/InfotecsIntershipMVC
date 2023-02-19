@@ -74,7 +74,7 @@ namespace InfotecsIntershipMVC.DAL.Repositories
             return await _dbContext.Files.ToListAsync();
         }
 
-        public IEnumerable<FileEntity> GetAllImmutable()
+        public ImmutableList<FileEntity> GetAllImmutable()
         {
             return _dbContext.Files.ToImmutableList();
         }

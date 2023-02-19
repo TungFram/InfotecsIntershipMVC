@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 
 namespace InfotecsIntershipMVC.Services.Calculaing
 {
-    public class CalculatingService
+    public class CalculatingService // TODO: make this service as parameter for main service
     {
         private readonly ImmutableList<RecordEntity> _records;
         private ResultEntity _result;

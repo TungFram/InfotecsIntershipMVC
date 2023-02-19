@@ -99,7 +99,7 @@ namespace InfotecsIntershipMVC.DAL.Repositories
             return await _dbContext.Results.ToListAsync();
         }
 
-        public IEnumerable<ResultEntity> GetAllImmutable()
+        public ImmutableList<ResultEntity> GetAllImmutable()
         {
             return _dbContext.Results.ToImmutableList();
         }

@@ -14,7 +14,8 @@ namespace InfotecsIntershipMVC.Services.Calculaing.CalculationCommands
             _records = records;
             _result = result;
             if (!IsDataValid()) 
-                throw new ArgumentNullException("Result entity or file doesn't exist, or file might doesn't contain any rows.");
+                throw new ArgumentNullException("Result entity or file doesn't exist, " +
+                    "or file might doesn't contain any rows.");
         }
 
         public abstract ResultEntity Execute();
@@ -27,12 +28,9 @@ namespace InfotecsIntershipMVC.Services.Calculaing.CalculationCommands
 
         protected bool IsDataValid()
         {
-            if (_result == null
-                || _records == null
-                || _records.Count == 0)
-                return false;
-
-            return true;
+            return (_result != null
+                && _records != null
+                && _records.Count != 0);
         }
 
         protected void ToNextOperation()

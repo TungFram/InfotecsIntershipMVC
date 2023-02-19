@@ -4,6 +4,7 @@ using InfotecsIntershipMVC.DAL.Repositories;
 using InfotecsIntershipMVC.Services;
 using InfotecsIntershipMVC.Services.Converting;
 using InfotecsIntershipMVC.Services.CSV;
+using InfotecsIntershipMVC.Services.Filtering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
@@ -20,6 +21,7 @@ builder.Services.AddDbContext<InfotecsDBContext>
 
 builder.Services.AddScoped<ICsvService, CsvService>();
 builder.Services.AddScoped<IConvertingService, ConvertingService>();
+builder.Services.AddScoped<IFilteringService, FilteringService>();
 /*builder.Services.AddScoped<IGenericAsyncRepository<FileEntity>, FilesRepository>();
 builder.Services.AddScoped<IGenericRepository<FileEntity>, FilesRepository>();*/
 builder.Services.AddTransient<MainService>();

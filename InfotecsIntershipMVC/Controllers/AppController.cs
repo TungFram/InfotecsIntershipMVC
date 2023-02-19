@@ -1,5 +1,6 @@
 ﻿using InfotecsIntershipMVC.DAL.Models;
 using InfotecsIntershipMVC.Services;
+using InfotecsIntershipMVC.Services.Filtering.Filters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InfotecsIntershipMVC.Controllers
@@ -27,9 +28,12 @@ namespace InfotecsIntershipMVC.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetDate()
+        public IActionResult FilterData([FromForm] IEnumerable<AcFilter> filters)
         {
-            return Ok($"|{DateTime.Now.ToShortDateString}|{DateTime.Now.ToLongDateString}|"); 
+            IEnumerable<ResultEntity> filtered = _mainService.ApplyFiltersToData(filters);
+
+
+            return Ok($""); 
         }
 
     }

@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace InfotecsIntershipMVC.DAL.Models
 {
-    public class RecordEntity
+    public class RecordEntity : IEntity
     {
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
