@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace InfotecsIntershipMVC.Services.Filtering.Filters.SortingFilters.AverageDuration
 {
-    public class AvgDurationDescFilter : AcFilter
+    public class AvgDurationDescFilter : AcFilter<ResultEntity>
     {
         public override IEnumerable<ResultEntity> Apply()
         {

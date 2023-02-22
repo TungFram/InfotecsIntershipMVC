@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 
 namespace InfotecsIntershipMVC.Services.Filtering.Filters.SortingFilters.Filename
 {
-    public class FilenameAscFilter : AcFilter
+    public class ResultFilenameAscFilter : AcFilter<ResultEntity>
     {
         public override IEnumerable<ResultEntity> Apply()
         {

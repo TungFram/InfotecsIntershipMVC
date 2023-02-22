@@ -1,0 +1,41 @@
+﻿@using InfotecsIntershipMVC.DAL.Models;
+@model IReadOnlyCollection<ResultEntity>;
+
+@{
+    ViewData["Title"] = "Results";
+}
+
+<a asp-controller="App" asp-action="FilterResults">Filter results</a>
+
+<div class="container">
+    <div class="row">
+        <div class="col">File name</div>
+        <div class="col">All time</div>
+        <div class="col">First operation</div>
+        <div class="col">Average duration</div>
+        <div class="col">Median by value</div>
+        <div class="col">Max value</div>
+        <div class="col">Average value</div>
+        <div class="col">Min value</div>
+        <div class="col">Rows</div>
+    </div>
+
+    @{
+        for (int i = Model.Count() - 1; i >= 0; i--)
+        {
+            var currentModel = @Model.ElementAt(i);
+
+            <div class="row">
+                <div class="col">@currentModel.FileName</div>
+                <div class="col">@currentModel.AllTime</div>
+                <div class="col">@currentModel.FirstOperation</div>
+                <div class="col">@currentModel.AverageDuration</div>
+                <div class="col">@currentModel.MedianByValue</div>
+                <div class="col">@currentModel.MaxValue</div>
+                <div class="col">@currentModel.AverageValue</div>
+                <div class="col">@currentModel.MinValue</div>
+                <div class="col">@currentModel.RowCount</div>
+            </div>
+        }
+    }
+</div>

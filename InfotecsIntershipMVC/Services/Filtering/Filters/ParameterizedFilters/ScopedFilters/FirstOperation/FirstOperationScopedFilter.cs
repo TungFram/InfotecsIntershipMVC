@@ -2,7 +2,7 @@
 
 namespace InfotecsIntershipMVC.Services.Filtering.Filters.ParameterizedFilters.ScopedFilters.FirstOperation
 {
-    public class FirstOperationScopedFilter : AcScopedFilter<DateTime>
+    public class FirstOperationScopedFilter : AcScopedFilter<DateTime, ResultEntity>
     {
         public override IEnumerable<ResultEntity> Apply()
         {
@@ -14,7 +14,7 @@ namespace InfotecsIntershipMVC.Services.Filtering.Filters.ParameterizedFilters.S
             return ToNextFilter();
         }
 
-        public override AcScopedFilter<DateTime> WithBoundaries(
+        public override AcScopedFilter<DateTime, ResultEntity> WithBoundaries(
             DateTime startBoundary, 
             DateTime endBoundary)
         {

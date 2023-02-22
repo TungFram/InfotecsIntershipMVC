@@ -2,7 +2,7 @@
 
 namespace InfotecsIntershipMVC.Services.Filtering.Filters.SortingFilters.AverageValue
 {
-    public class AvgValueAscFilter : AcFilter
+    public class AvgValueAscFilter : AcFilter<ResultEntity>
     {
         public override IEnumerable<ResultEntity> Apply()
         {

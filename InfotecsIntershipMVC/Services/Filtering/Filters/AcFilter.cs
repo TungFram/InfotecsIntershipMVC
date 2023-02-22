@@ -3,14 +3,14 @@ using System.Collections.Immutable;
 
 namespace InfotecsIntershipMVC.Services.Filtering.Filters
 {
-    public abstract class AcFilter
+    public abstract class AcFilter<T> where T : IEntity
     {
-        protected AcFilter _nextFilter;
-        protected ICollection<ResultEntity> _results;
+        protected AcFilter<T> _nextFilter;
+        protected ICollection<T> _results;
 
-        public abstract IEnumerable<ResultEntity> Apply();
+        public abstract IEnumerable<T> Apply();
 
-        public AcFilter SetResults(ICollection<ResultEntity> results)
+        public AcFilter<T> SetResults(ICollection<T> results)
         {
             if (!IsDataValid(results))
                 throw new ArgumentException("Can't handle nothing");
@@ -19,18 +19,18 @@ namespace InfotecsIntershipMVC.Services.Filtering.Filters
             return this;
         }
 
-        public AcFilter WithNextFilter(AcFilter filter)
+        public AcFilter<T> WithNextFilter(AcFilter<T> filter)
         {
             _nextFilter = filter;
             return _nextFilter;
         }
 
-        protected bool IsDataValid(IEnumerable<ResultEntity> data)
+        protected bool IsDataValid(IEnumerable<T> data)
         {
             return (data != null && data.Count() != 0);
         }
 
-        protected IEnumerable<ResultEntity> ToNextFilter()
+        protected IEnumerable<T> ToNextFilter()
         {
             if (_nextFilter== null) { return _results; }
             return _nextFilter.SetResults(_results).Apply();

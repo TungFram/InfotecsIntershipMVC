@@ -40,6 +40,7 @@ namespace InfotecsIntershipMVC.DAL.Repositories
         {
             return _dbContext.Files
                 .Include(file => file.Records)
+                .Include(file => file.Result)
                 .FirstOrDefault(file => file.Name == name);
         }
 
@@ -47,6 +48,7 @@ namespace InfotecsIntershipMVC.DAL.Repositories
         {
             return await _dbContext.Files
                 .Include(file => file.Records)
+                .Include(file => file.Result)
                 .FirstOrDefaultAsync(file => file.Name == name);
         }
 
@@ -54,6 +56,7 @@ namespace InfotecsIntershipMVC.DAL.Repositories
         {
             return _dbContext.Files
                 .Include(file => file.Records)
+                .Include(file => file.Result)
                 .FirstOrDefault(file => file.FileID == id);
         }
 
@@ -61,22 +64,47 @@ namespace InfotecsIntershipMVC.DAL.Repositories
         {
             return await _dbContext.Files
                 .Include(file => file.Records)
+                .Include(file => file.Result)
                 .FirstOrDefaultAsync(file => file.FileID == id);
         }
 
         public IEnumerable<FileEntity> GetAll()
         {
-            return _dbContext.Files.ToList();
+            var files = new List<FileEntity>();
+
+            // Get files with records and result.
+            foreach (var file in _dbContext.Files.ToList())
+            {
+                files.Add(FindById(file.FileID));
+            }
+
+            return files;
         }
 
         public async Task<IEnumerable<FileEntity>> GetAllAsync()
         {
-            return await _dbContext.Files.ToListAsync();
+            var files = new List<FileEntity>();
+
+            // Get files with records and result.
+            foreach (var file in _dbContext.Files.ToList())
+            {
+                files.Add(await FindByIdAsync(file.FileID));
+            }
+
+            return files;
         }
 
         public ImmutableList<FileEntity> GetAllImmutable()
         {
-            return _dbContext.Files.ToImmutableList();
+            var files = new List<FileEntity>();
+
+            // Get files with records and result.
+            foreach (var file in _dbContext.Files.ToList())
+            {
+                files.Add(FindById(file.FileID));
+            }
+
+            return files.ToImmutableList();
         }
 
         public int Update(FileEntity newEntity)

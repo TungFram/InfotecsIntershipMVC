@@ -21,7 +21,8 @@ builder.Services.AddDbContext<InfotecsDBContext>
 
 builder.Services.AddScoped<ICsvService, CsvService>();
 builder.Services.AddScoped<IConvertingService, ConvertingService>();
-builder.Services.AddScoped<IFilteringService, FilteringService>();
+builder.Services.AddScoped<IFilteringService<ResultEntity>, FilteringService<ResultEntity>>();
+builder.Services.AddScoped<IFilteringService<RecordEntity>, FilteringService<RecordEntity>>();
 /*builder.Services.AddScoped<IGenericAsyncRepository<FileEntity>, FilesRepository>();
 builder.Services.AddScoped<IGenericRepository<FileEntity>, FilesRepository>();*/
 builder.Services.AddTransient<MainService>();
@@ -41,15 +42,18 @@ builder.Services.AddSwaggerGen(options =>
         TermsOfService = new Uri("https://example.com/terms"),
         Contact = new OpenApiContact
         {
-            Name = "Example Contact",
-            Url = new Uri("https://example.com/contact")
+            Name = "Open pages-solution",
+            Url = new Uri("https://localhost:7076/App/Welcome")
         },
         License = new OpenApiLicense
         {
             Name = "Example License",
             Url = new Uri("https://example.com/license")
         }
+        
     });
+
+    options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
 });
 
 var app = builder.Build();

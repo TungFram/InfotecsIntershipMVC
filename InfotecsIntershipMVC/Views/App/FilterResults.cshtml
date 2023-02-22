@@ -1,0 +1,68 @@
+﻿@using InfotecsIntershipMVC.DAL.Models;
+@model ResultsFilterModel;
+
+
+<form method="post" asp-controller="App" asp-action="GetResults">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group">
+        <div>
+            <label asp-for="IsFilenameAscSort"></label>
+            <input type="checkbox" asp-for="IsFilenameAscSort" /> <br />
+            <span asp-validation-for="IsFilenameAscSort"></span>
+        </div>
+        <div>
+            <label asp-for="IsFilenameDescSort"></label>
+            <input type="checkbox" asp-for="IsFilenameDescSort" /> <br />
+            <span asp-validation-for="IsFilenameDescSort"></span>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <div>
+            <label asp-for="FirstOperaionStart"></label>
+            <input class="form-control" asp-for="FirstOperaionStart" asp-format="{dd.MM.yyyy}"
+                   min="2000-01-01" />
+            <span asp-validation-for="FirstOperaionStart"></span>
+        </div>
+        <div>
+            <label asp-for="FirstOperaionEnd"></label>
+            <input class="form-control" asp-for="FirstOperaionEnd" asp-format="{dd.MM.yyyy}"
+                   min="2000-01-01" />
+            <span asp-validation-for="FirstOperaionEnd"></span>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <div>
+            <label asp-for="AverageDuraionStart"></label>
+            <input class="form-control" asp-for="AverageDuraionStart" />
+            <span asp-validation-for="AverageDuraionStart"></span>
+        </div>
+        <div>
+            <label asp-for="AverageDuraionEnd"></label>
+            <input class="form-control" asp-for="AverageDuraionEnd" />
+            <span asp-validation-for="AverageDuraionEnd"></span>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <div>
+            <label asp-for="AverageValueStart"></label>
+            <input class="form-control" asp-for="AverageValueStart" />
+            <span asp-validation-for="AverageValueStart"></span>
+        </div>
+        <div>
+            <label asp-for="AverageValueEnd"></label>
+            <input class="form-control" asp-for="AverageValueEnd" />
+            <span asp-validation-for="AverageValueEnd"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Filter" class="btn btn-primary" />
+    </div>
+</form>

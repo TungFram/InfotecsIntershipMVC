@@ -1,12 +1,14 @@
-﻿using System.Numerics;
+﻿using InfotecsIntershipMVC.DAL.Models;
+using System.Numerics;
 
 namespace InfotecsIntershipMVC.Services.Filtering.Filters.ParameterizedFilters.ScopedFilters
 {
-    public abstract class AcScopedFilter<T> : AcFilter
+    public abstract class AcScopedFilter<TBoundary, TEntity> : AcFilter<TEntity> where TEntity : IEntity
     {
-        protected T _startBoundary;
-        protected T _endBoundary;
+        protected TBoundary _startBoundary;
+        protected TBoundary _endBoundary;
 
-        public abstract AcScopedFilter<T> WithBoundaries(T startBoundary, T endBoundary);
+        public abstract AcScopedFilter<TBoundary, TEntity>
+            WithBoundaries(TBoundary startBoundary, TBoundary endBoundary);
     }
 }

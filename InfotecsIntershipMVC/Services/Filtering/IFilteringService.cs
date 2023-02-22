@@ -4,11 +4,11 @@ using System.Collections.Immutable;
 
 namespace InfotecsIntershipMVC.Services.Filtering
 {
-    public interface IFilteringService
+    public interface IFilteringService<T> where T : IEntity
     {
-        public FilteringService WithFilters(IEnumerable<AcFilter> filters);
-        public FilteringService WithData(ImmutableList<ResultEntity> data);
-        public IEnumerable<ResultEntity> ApplyFileters();
+        public FilteringService<T> WithFilters(IEnumerable<AcFilter<T>> filters);
+        public FilteringService<T> WithData(ImmutableList<T> data);
+        public IEnumerable<T> ApplyFileters();
 
 
     }

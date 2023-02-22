@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace InfotecsIntershipMVC.Services.Filtering.Filters.ParameterizedFilters.ScopedFilters.AverageDuration
 {
-    public class AvgDurationScopedFilter : AcScopedFilter<int>
+    public class AvgDurationScopedFilter : AcScopedFilter<int, ResultEntity>
     {
         public override IEnumerable<ResultEntity> Apply()
         {
@@ -15,7 +15,7 @@ namespace InfotecsIntershipMVC.Services.Filtering.Filters.ParameterizedFilters.S
             return ToNextFilter();
         }
 
-        public override AcScopedFilter<int> WithBoundaries(
+        public override AcScopedFilter<int, ResultEntity> WithBoundaries(
             int startBoundary = 0,
             int endBoundary = int.MaxValue)
         {

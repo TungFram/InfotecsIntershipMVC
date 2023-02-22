@@ -5,13 +5,13 @@ using System.Collections.ObjectModel;
 
 namespace InfotecsIntershipMVC.Services.Filtering
 {
-    public class FilteringService : IFilteringService
+    public class FilteringService<T> : IFilteringService<T> where T : IEntity
     {
-        private ImmutableList<ResultEntity> _results;
-        private IEnumerable<AcFilter> _filters;
-        private AcFilter _firstChainedFilter;
+        private ImmutableList<T> _results;
+        private IEnumerable<AcFilter<T>> _filters;
+        private AcFilter<T> _firstChainedFilter;
 
-        public FilteringService WithFilters(IEnumerable<AcFilter> filters)
+        public FilteringService<T> WithFilters(IEnumerable<AcFilter<T>> filters)
         {
             if (filters == null || filters.Count() == 0)
                 throw new ArgumentNullException($"Filtering service must contain any filters");
@@ -21,7 +21,7 @@ namespace InfotecsIntershipMVC.Services.Filtering
             return this;
         }
 
-        public FilteringService WithData(ImmutableList<ResultEntity> data)
+        public FilteringService<T> WithData(ImmutableList<T> data)
         {
             if (data == null || data.Count() == 0)
                 throw new ArgumentNullException($"Can't filter nothing");
@@ -30,10 +30,10 @@ namespace InfotecsIntershipMVC.Services.Filtering
             return this;
         }
 
-        public IEnumerable<ResultEntity> ApplyFileters()
+        public IEnumerable<T> ApplyFileters()
         {
-            IEnumerable<ResultEntity> filteredResuls = _firstChainedFilter
-                .SetResults(new List<ResultEntity>(_results))
+            IEnumerable<T> filteredResuls = _firstChainedFilter
+                .SetResults(new List<T>(_results))
                 .Apply();
             return filteredResuls;
         }

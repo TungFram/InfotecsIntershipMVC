@@ -2,7 +2,7 @@
 
 namespace InfotecsIntershipMVC.Services.Filtering.Filters.SortingFilters.AllTime
 {
-    public class AllTimeDescFilter : AcFilter
+    public class AllTimeDescFilter : AcFilter<ResultEntity>
     {
         public override IEnumerable<ResultEntity> Apply()
         {

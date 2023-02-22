@@ -1,0 +1,51 @@
+﻿@using InfotecsIntershipMVC.DAL.Models;
+@model RecordsFilterModel;
+
+<form method="post" asp-controller="App" asp-action="FilterRecords">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+
+    <div class="form-group">
+        <div>
+            <label asp-for="FileName"></label>
+            <input class="form-control" asp-for="FileName" />
+            <span asp-validation-for="FileName"></span>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <div>
+            <label asp-for="IsFilenameAscSort"></label>
+            <input type="checkbox" asp-for="IsFilenameAscSort" /> <br />
+            <span asp-validation-for="IsFilenameAscSort"></span>
+        </div>
+        <div>
+            <label asp-for="IsFilenameDescSort"></label>
+            <input type="checkbox" asp-for="IsFilenameDescSort" /> <br />
+            <span asp-validation-for="IsFilenameDescSort"></span>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <div>
+            <label asp-for="StartWithPattern"></label>
+            <input class="form-control" asp-for="StartWithPattern" />
+            <span asp-validation-for="StartWithPattern"></span>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <div>
+            <label asp-for="ContainsPattern"></label>
+            <input class="form-control" asp-for="ContainsPattern" />
+            <span asp-validation-for="ContainsPattern"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Filter" class="btn btn-primary" />
+    </div>
+</form>

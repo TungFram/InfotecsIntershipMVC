@@ -2,7 +2,7 @@
 
 namespace InfotecsIntershipMVC.Services.Filtering.Filters.SortingFilters.AverageDuration
 {
-    public class AvgDurationAscFilter : AcFilter
+    public class AvgDurationAscFilter : AcFilter<ResultEntity>
     {
         public override IEnumerable<ResultEntity> Apply()
         {

@@ -1,12 +1,14 @@
-﻿using InfotecsIntershipMVC.DAL.Models;
-using InfotecsIntershipMVC.Services.Converting;
-using InfotecsIntershipMVC.Services.CSV;
-using InfotecsIntershipMVC.Services.Calculaing;
-using InfotecsIntershipMVC.DAL.Repositories;
+﻿using System.Transactions;
 using System.Collections.Immutable;
-using System.Transactions;
-using InfotecsIntershipMVC.Services.Filtering.Filters;
+
+using InfotecsIntershipMVC.DAL.Models;
+using InfotecsIntershipMVC.DAL.Repositories;
+
+using InfotecsIntershipMVC.Services.CSV;
+using InfotecsIntershipMVC.Services.Converting;
+using InfotecsIntershipMVC.Services.Calculaing;
 using InfotecsIntershipMVC.Services.Filtering;
+using InfotecsIntershipMVC.Services.Filtering.Filters;
 
 namespace InfotecsIntershipMVC.Services
 {
@@ -19,7 +21,8 @@ namespace InfotecsIntershipMVC.Services
 
         private readonly ICsvService _csvService;
         private readonly IConvertingService _convertingService;
-        private readonly IFilteringService _filteringService;
+        private readonly IFilteringService<ResultEntity> _resultsfilteringService;
+        private readonly IFilteringService<RecordEntity> _recordsfilteringService;
 
         public MainService(
             ILogger<MainService> logger,
@@ -27,20 +30,22 @@ namespace InfotecsIntershipMVC.Services
             ResultsRepository resultsRepository,
             ICsvService csvService, 
             IConvertingService convertingService,
-            IFilteringService filteringService)
+            IFilteringService<ResultEntity> resultsfilteringService,
+            IFilteringService<RecordEntity> recordsfilteringService)
         {
             _logger = logger;
             _filesRepository = filesRepository;
             _resultsRepository = resultsRepository;
             _csvService = csvService;
             _convertingService = convertingService;
-            _filteringService = filteringService;
+            _resultsfilteringService = resultsfilteringService;
+            _recordsfilteringService = recordsfilteringService;
         }
 
-        internal void SendAndReadCsv(IFormFile file)
+        internal FileEntity SendAndReadCsv(IFormFile file)
         {
             if (file.Length == 0)
-                return; // File is empty. No exception because of expensive.
+                return null; // File is empty. No exception because of expensive.
 
             IEnumerable<StringRecordEntity> fileData = _csvService.ReadCSV(file.OpenReadStream());
 
@@ -72,6 +77,7 @@ namespace InfotecsIntershipMVC.Services
                     // the creation will be done within EF automatically.
                 /*_resultsRepository.Create(fileEntity.Result);*/   // Set ID.
 
+
                 // Check for successfully transaction.
                 if (_filesRepository.FindById(fileEntity.FileID) != null ||
                     _resultsRepository.FindById(fileEntity.Result.ResultID) != null)
@@ -91,16 +97,46 @@ namespace InfotecsIntershipMVC.Services
                         $"Was the file before adding? {existedFile != null}.");
                 }
             }
+
+            return fileEntity;
         }
 
-        public IEnumerable<ResultEntity> ApplyFiltersToData(IEnumerable<AcFilter> filters)
+        public IEnumerable<ResultEntity> ApplyResultFilters(IEnumerable<AcFilter<ResultEntity>> filters)
         {
-            IEnumerable<ResultEntity> filteredResults = _filteringService
+            IEnumerable<ResultEntity> filteredResults = _resultsfilteringService
                 .WithFilters(filters)
                 .WithData(_resultsRepository.GetAllImmutable())
                 .ApplyFileters();
 
             return filteredResults;
+        }
+
+        public IEnumerable<RecordEntity> ApplyRecordsFilters(IEnumerable<AcFilter<RecordEntity>> filters)
+        {
+            IEnumerable<RecordEntity> filteredResults = _recordsfilteringService
+                .WithFilters(filters)
+                .WithData(GetRecords().ToImmutableList())
+                .ApplyFileters();
+
+            return filteredResults;
+        }
+
+        public IReadOnlyCollection<ResultEntity> GetResults()
+        {
+            return _resultsRepository.GetAll().ToList();
+        }
+
+        public IReadOnlyCollection<RecordEntity> GetRecords()
+        {
+            List<FileEntity> files = _filesRepository.GetAll().ToList();
+            List<RecordEntity> records = new List<RecordEntity>();
+
+            foreach (var fileEntity in files)
+            {
+                records.AddRange(fileEntity.Records);
+            }
+
+            return records;
         }
     }
 }

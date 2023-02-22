@@ -2,7 +2,7 @@
 
 namespace InfotecsIntershipMVC.Services.Filtering.Filters.ParameterizedFilters.ScopedFilters.AverageValue
 {
-    public class AvgValueScopedFilter : AcScopedFilter<float>
+    public class AvgValueScopedFilter : AcScopedFilter<float, ResultEntity>
     {
         public override IEnumerable<ResultEntity> Apply()
         {
@@ -14,7 +14,7 @@ namespace InfotecsIntershipMVC.Services.Filtering.Filters.ParameterizedFilters.S
             return ToNextFilter();
         }
 
-        public override AcScopedFilter<float> WithBoundaries(
+        public override AcScopedFilter<float, ResultEntity> WithBoundaries(
             float startBoundary = 0, 
             float endBoundary = float.MaxValue)
         {
